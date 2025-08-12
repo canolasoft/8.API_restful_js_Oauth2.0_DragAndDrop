@@ -1,0 +1,28 @@
+/* Estilo de juego.html */
+.draggable {
+    width: 100px;
+    height: 100px;
+    cursor: grab;
+    border-radius: 5px;
+}
+
+.dropzone {
+    width: 220px;
+    height: 120px;
+    border: 2px dashed #666;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #e9e9e9;
+    border-radius: 5px;
+}
+
+.dropzone.hovered {
+    background-color: #d0e0ff;
+    border-color: #007bff;
+}
+
+/* Estilos de index.php */
+#loginForm {
+    display: none;
+}
