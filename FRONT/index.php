@@ -108,66 +108,6 @@ include 'main.html';
         });
     </script>
 
-    <!-- Solicitud GET para obtener los usuarios de la API ->
-    <script>
-        // Define la URL de la API
-        const apiUrl = 'http://localhost/API_restful_js/API/api.php/usuarios';
-        // Ejecuta la solicitud GET a la API para obtener los usuarios
-        fetch(apiUrl)
-        .then(response => {
-            if (!response.ok) {
-            throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log(data);
-            // Llama a la función para cargar los usuarios en la tabla HTML
-            loadUsuarios(data);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    </script>
-
-    <!-- Función para cargar los usuarios en una tabla HTML ->
-    <script>
-        function loadUsuarios(data) {
-            // Crea una tabla HTML para mostrar los usuarios
-            var table = document.createElement("table");
-            table.border = "1";
-            // Añade una fila de encabezado a la tabla.
-            var row = table.insertRow(-1);
-            // Añade las celdas de encabezado.
-            var headerCell = document.createElement("TH");
-            headerCell.innerHTML = "ID";
-            row.appendChild(headerCell);
-            headerCell = document.createElement("TH");
-            headerCell.innerHTML = "Nombre";
-            row.appendChild(headerCell);
-            headerCell = document.createElement("TH");
-            headerCell.innerHTML = "Email";
-            row.appendChild(headerCell);
-            headerCell = document.createElement("TH");
-            headerCell.innerHTML = "Imágen";
-            row.appendChild(headerCell);
-            // Añade las filas de datos a la tabla.
-            for (var i = 0; i < data.length; i++) {
-                // Crea una nueva fila para cada usuario.
-                var row = table.insertRow(-1);
-                // Añade las celdas de datos a la fila.
-                var cell = row.insertCell(-1);
-                cell.innerHTML = data[i].id;
-                cell = row.insertCell(-1);
-                cell.innerHTML = data[i].usr_name;
-                cell = row.insertCell(-1);
-                cell.innerHTML = data[i].usr_email;
-                cell = row.insertCell(-1);
-                cell.innerHTML = "<img src='http://localhost/API_restful_js/API/uploads/" + data[i].imagen + "' alt='Imagen de usuario' style='width: 100px; height: auto;'>";
-            }
-        }
-    </script>
-
     <!-- Solicitud POST para iniciar sesión con la API -->
     <script>
         document.getElementById('loginForm').addEventListener('submit', function(e) {
