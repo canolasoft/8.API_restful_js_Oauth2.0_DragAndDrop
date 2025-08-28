@@ -2,16 +2,6 @@
 include 'main.html';
 ?>
     <div class="container bg-dark text-light rounded-3 p-5 mt-3">
-
-        <!-- Solicitud POST a la API para añadir un nuevo usuario -->
-        <div class="col-lg-10 mx-auto text-center">
-            <h1>🎲 Juego de ejemplo ♟️</h1>
-            <p>Arrastra y suelta las fichas en las zonas correspondientes.</p>
-            <p>Lanza el dado, suma puntos y gana el juego.</p>
-        </div>
-
-        <hr>
-
         <!-- Formulario para añadir un nuevo usuario -->
         <form id="uploadForm" class="my-4 bg-light text-dark p-4 rounded col-lg-6 mx-auto" enctype="multipart/form-data">
             <h1 class="text-center">Registro de usuarios</h1>
