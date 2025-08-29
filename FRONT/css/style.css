@@ -1,5 +1,10 @@
+/* Estilos de main_top.html */
+#icon_login, #icon_logout {
+    display: none;
+}
+
 /* Estilos de index.php */
-#loginForm {
+#loginForm, #registerForm {
     display: none;
 }
 
@@ -7,11 +12,6 @@
 * {
     margin: 0;
     padding: 0;
-}
-
-body {
-    background-color: lightcyan;
-    text-align: center;
 }
 
 .container {
@@ -50,17 +50,6 @@ body {
     border: none;
 }
 
-/*.box:hover {
-            background-color: chocolate;
-        }
-        #new-btn {
-            padding: 1rem;
-            font-size: 1.25rem;
-            background: #191913;
-            color: white;
-            border-radius: 1rem;
-            border: none;
-        }*/
 #msg {
     font-size: 8vmin;
 }

@@ -19,38 +19,20 @@ header('Content-Type: application/json');
 
 // Procesa la solicitud según el método HTTP
 switch ($method) {
-	case 'GET':
-		if($endpoint === '/usuarios'){
-			// Obtiene todos los usuarios
-			$usuarios = $usuarioObj->getAllUsuarios();
-			echo json_encode($usuarios);
-		} elseif (preg_match('/^\/usuarios\/(\d+)$/', $endpoint, $matches)) {
-			// Obtiene un usuario por ID
-			$usuarioId = $matches[1];
-			$usuario = $usuarioObj->getUsuarioById($usuarioId);
-			echo json_encode($usuario);
-		}
-		break;
 	case 'POST':
 		if($endpoint === '/usuarios'){
 			// Añade un nuevo usuario
 			$data = json_decode(file_get_contents('php://input'), true);
 			$result = $usuarioObj->addUsuario($data);
-			if ($result === true) {
-				http_response_code(201);
-				echo json_encode(['success' => $result]);
-			}else{
-				http_response_code(400);
-				echo json_encode(['error' => 'Datos incompletos o error al registrar usuario']);
-			}
+			echo $result;
 		}elseif ($endpoint === '/login') {
 			$data = json_decode(file_get_contents('php://input'), true);
 			$result = $usuarioObj->loginUsuario($data);
 			echo $result;
 		}elseif ($endpoint === '/usuario') {
-			// Obtiene el usuario (autenticado) a partir del token
+			// Obtiene los datos del usuario
 			$data = json_decode(file_get_contents('php://input'), true);
-			$result = $usuarioObj->getUsuarioAutenticado($data['token']);
+			$result = $usuarioObj->getUsuario($data);
 			echo $result;
 		}elseif ($endpoint === '/logout') {
 			// Cierra sesión del usuario
