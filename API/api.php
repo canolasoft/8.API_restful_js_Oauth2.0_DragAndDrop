@@ -37,20 +37,8 @@ switch ($method) {
 		}elseif ($endpoint === '/logout') {
 			// Cierra sesión del usuario
 			$data = json_decode(file_get_contents('php://input'), true);
-			if (isset($data['usr_key'])) {
-				// Aquí podrías implementar la lógica para cerrar sesión, como invalidar la clave de sesión
-				$result = $usuarioObj->logoutUsuario( $data['usr_key']);
-				if($result === true) {
-					http_response_code(200);
-					echo json_encode(['success' => true, 'message' => 'Sesión cerrada']);
-				} else {
-					http_response_code(400);
-					echo json_encode(['error' => 'Error al cerrar sesión']);
-				}
-			} else {
-				http_response_code(400);
-				echo json_encode(['error' => 'Datos incompletos']);
-			}
+			$result = $usuarioObj->logoutUsuario( $data);
+			echo $result;
 		}
 		break;
 	case 'PUT':

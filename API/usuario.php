@@ -21,8 +21,7 @@ class Usuario
 	// Métodos para manejar usuarios
 
 	// Añade un nuevo usuario
-	public function addUsuario($data)
-	{
+	public function addUsuario($data){
 		if (!isset($data['usr_name']) || !isset($data['usr_email']) || !isset($data['usr_pass'])) {
 			http_response_code(400);
 			return json_encode(["error" => "Datos incompletos"]);
@@ -48,8 +47,7 @@ class Usuario
 	}
 
 	// Iniciar sesión de usuario
-	public function loginUsuario($data)
-	{
+	public function loginUsuario($data){
 		if (!isset($data['usr_email']) || !isset($data['usr_pass'])) {
 			http_response_code(400);
 			return json_encode(["error" => "Datos incompletos"]);
@@ -93,7 +91,6 @@ class Usuario
 		}
 	}
 
-
 	public function getUsuario($data){
 		if (!isset($data['token'])) {
 			http_response_code(400);
@@ -115,15 +112,22 @@ class Usuario
 		}
 	}
 
-	public function logoutUsuario($key)
-	{
-		// Por ejemplo, eliminar el token de la base de datos
-		$query = "DELETE FROM access_token WHERE token = '$key'";
-		$result = mysqli_query($this->conn, $query);
-		if ($result) {
-			return true; // Sesión cerrada correctamente
-		} else {
-			return false; // Error al cerrar sesión
+	public function logoutUsuario($data){
+		if(!isset($data['usr_key'])){
+			http_response_code(400);
+			return json_encode(["error" => "Datos incompletos"]);
+		}else{
+			$key = $data['usr_key'];
+			// liminar el token de la base de datos
+			$query = "DELETE FROM access_token WHERE token = '$key'";
+			$result = mysqli_query($this->conn, $query);
+			if($result){
+				http_response_code(200);
+				return json_encode(["success" => "Sesión cerrada correctamente"]);
+			} else {
+				http_response_code(500);
+				return json_encode(["error" => "Error al cerrar sesión"]);
+			}
 		}
 	}
 }
