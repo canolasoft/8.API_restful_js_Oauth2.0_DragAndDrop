@@ -71,3 +71,8 @@
 <?php
     include 'main_bot.html';
 ?>
+
+    <script src="js/index.js"></script>
+
+</body>
+</html>

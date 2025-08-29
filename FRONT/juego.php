@@ -31,3 +31,6 @@
 <?php
     include 'main_bot.html';
 ?>
+
+</body>
+</html>

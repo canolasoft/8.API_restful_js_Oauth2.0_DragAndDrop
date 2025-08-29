@@ -2,13 +2,14 @@
 - main_bot.html
 ----------------------------------------------------------------- */
 // obtengo el contenido del token de inicio de sesión
-const token = document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1];
+const tokenCookie = document.cookie.split('; ').find(row => row.startsWith('token='));
+const token = tokenCookie ? tokenCookie.split('=')[1] : null;
 if (token) {
-    document.getElementById('icon_login').style.display = 'none';
-    document.getElementById('icon_logout').style.display = 'block';
+    document.getElementById('btn_login').style.display = 'none';
+    document.getElementById('btn_logout').style.display = 'block';
 } else {
-    document.getElementById('icon_login').style.display = 'block';
-    document.getElementById('icon_logout').style.display = 'none';
+    document.getElementById('btn_login').style.display = 'block';
+    document.getElementById('btn_logout').style.display = 'none';
 }
 
 // Mostrar el formulario de inicio de sesión

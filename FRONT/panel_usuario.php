@@ -41,3 +41,6 @@
 ?>
 
     <script src="js/panel_usuario.js"></script>
+
+</body>
+</html>
