@@ -26,13 +26,13 @@
         <h2>Partidas en curso</h2>
         <ul id="partidas-en-curso" class="list-group">
             <!-- Lista de partidas en curso -->
-
+            <div id="partidas_encurso" class="row rounded mx-auto m-4 text-center"></div>
         </ul>
         <hr>
         <h2>Historial de partidas</h2>
         <ul id="partidas-finalizadas" class="list-group">
             <!-- Lista de partidas finalizadas -->
-             
+            <div id="partidas_finalizadas" class="row rounded mx-auto m-4 text-center"></div>
         </ul>
     </div>
 
