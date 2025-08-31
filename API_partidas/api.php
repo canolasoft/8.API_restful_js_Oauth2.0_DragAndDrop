@@ -20,10 +20,15 @@ header('Content-Type: application/json');
 // Procesa la solicitud según el método HTTP
 switch ($method) {
 	case 'POST':
-		if ($endpoint === '/partidas') {
+		if ($endpoint === '/getpartidas') {
 			// Obtiene la lista de partidas
 			$data = json_decode(file_get_contents('php://input'), true);
 			$result = $partidaObj->getPartidas($data);
+			echo $result;
+		}elseif($endpoint === '/addpartida') {
+			// Crea una nueva partida
+			$data = json_decode(file_get_contents('php://input'), true);
+			$result = $partidaObj->addPartida($data);
 			echo $result;
 		}
 		break;

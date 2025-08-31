@@ -6,7 +6,7 @@
         <strong><span id="usr_email"></span></strong>
         <br>
         <!-- Iniciar partida -->
-        <form class="my-4 bg-light text-dark p-4 rounded col-lg-6 mx-auto" enctype="multipart/form-data">
+        <form id="crearPartidaForm" class="my-4 bg-light text-dark p-4 rounded col-lg-6 mx-auto" enctype="multipart/form-data">
             <h1 class="text-center">Nueva partida</h1>
             <div class="mb-3">
                 <label for="usr_name" class="form-label">Nombre oponente<strong class="text-danger">*</strong></label>

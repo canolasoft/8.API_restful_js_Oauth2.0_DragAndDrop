@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS base_usuarios.partidas (
     id_usuario INT(11) NOT NULL,
     nombre_oponente VARCHAR(100) NOT NULL,
     fecha DATETIME NOT NULL DEFAULT NOW(),
-    resultado INT(1) NOT NULL, /* 0: en curso, 1: ganado, 2: perdido, 3: empate */
+    resultado INT(1) DEFAULT 0, /* 0: en curso, 1: ganado, 2: perdido, 3: empate */
     PRIMARY KEY (id),
     FOREIGN KEY (id_usuario) REFERENCES usuario(id) ON DELETE CASCADE
 );

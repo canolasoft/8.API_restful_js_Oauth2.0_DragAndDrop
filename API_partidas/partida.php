@@ -22,26 +22,39 @@ class Partida
 
 	// Añade una nueva partida
 	public function addPartida($data){
-		if (!isset($data['id_usuario']) || !isset($data['nombre_oponente']) || !isset($data['resultado'])) {
+		if (!isset($data['token']) || !isset($data['nombre_oponente'])) {
 			http_response_code(400);
 			return json_encode(["error" => "Datos incompletos"]);
 		} else {
-			$id_usuario = $data['id_usuario'];
+			$token = $data['token'];
 			$nombre_oponente = $data['nombre_oponente'];
-			$resultado = $data['resultado'];
 			try {
-				$query = "INSERT INTO partidas (id_usuario, nombre_oponente, resultado) VALUES ('$id_usuario', '$nombre_oponente', '$resultado')";
+				// Verifica el token
+				$query = "SELECT id_usuario FROM access_token WHERE token = '$token'";
+				$resultUser = mysqli_query($this->conn, $query);
+				if (!$resultUser || mysqli_num_rows($resultUser) == 0) {
+					http_response_code(401);
+					return json_encode(["error" => "Token inválido"]);
+				}
+				$row = mysqli_fetch_assoc($resultUser);
+				$id_usuario = $row['id_usuario'];
+				// Inserta la nueva partida
+				$query = "INSERT INTO partidas (id_usuario, nombre_oponente) VALUES ('$id_usuario', '$nombre_oponente')";
 				$result = mysqli_query($this->conn, $query);
+				if ($result) {
+					$id_partida = mysqli_insert_id($this->conn); // <-- Aquí obtienes la ID
+					http_response_code(201);
+					return json_encode([
+						"success" => "Partida creada",
+						"id_partida" => $id_partida
+					]);
+				} else {
+					http_response_code(400);
+					return json_encode(["error" => "No se pudo crear la partida"]);
+				}
 			} catch (mysqli_sql_exception $e) {
 				http_response_code(500);
 				return json_encode(["error" => "Error en la base de datos: " . $e->getMessage()]);
-			}
-			if ($result) {
-				http_response_code(201);
-				return json_encode(["success" => "Usuario registrado con éxito"]);
-			} else {
-				http_response_code(400);
-				return json_encode(["error" => "No se pudo registrar el usuario"]);
 			}
 		}
 	}
@@ -51,15 +64,16 @@ class Partida
 			http_response_code(400);
 			return json_encode(["error" => "Datos incompletos"]);
 		}
-		$id_usuario = $data['id_usuario'];
 		$token = $data['token'];
-		// Verificar el token
-		$queryToken = "SELECT token FROM usuario WHERE id = '$id_usuario' AND token = '$token'";
-		$resultToken = mysqli_query($this->conn, $queryToken);
-		if (!$resultToken || mysqli_num_rows($resultToken) == 0) {
+		// Verifica el token
+		$query = "SELECT id_usuario FROM access_token WHERE token = '$token'";
+		$resultUser = mysqli_query($this->conn, $query);
+		if (!$resultUser || mysqli_num_rows($resultUser) == 0) {
 			http_response_code(401);
 			return json_encode(["error" => "Token inválido"]);
 		}
+		$row = mysqli_fetch_assoc($resultUser);
+		$id_usuario = $row['id_usuario'];
 		$query = "SELECT * FROM partidas WHERE id_usuario = '$id_usuario'";
 		$result = mysqli_query($this->conn, $query);
 		if ($result && mysqli_num_rows($result) > 0) {
