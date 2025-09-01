@@ -212,7 +212,7 @@ const checkWinner = (winPatterns) => {
         showWinner("X");
       }
       hasWin = true;
-      return; // retorna de la funcion sin enviar el movimiento a la api
+      //return; // retorna de la funcion sin enviar el movimiento a la api
     }
   }
   console.log(String(getEstadoTablero()));
