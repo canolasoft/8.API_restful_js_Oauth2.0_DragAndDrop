@@ -31,6 +31,17 @@ switch ($method) {
 			$result = $partidaObj->addPartida($data);
 			echo $result;
 		}
+		else if($endpoint === '/getpartida') {
+			// Obtiene una partida específica
+			$data = json_decode(file_get_contents('php://input'), true);
+			$result = $partidaObj->getPartida($data);
+			echo $result;
+		}elseif($endpoint === '/movimiento') {
+			// Envía un movimiento en una partida
+			$data = json_decode(file_get_contents('php://input'), true);
+			$result = $partidaObj->enviarMovimiento($data);
+			echo $result;
+		}
 		break;
 	default:
 		// Maneja métodos no permitidos

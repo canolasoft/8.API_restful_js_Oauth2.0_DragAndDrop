@@ -38,7 +38,7 @@
     box-shadow: 0 0 1rem rgba(0, 0, 0, 0.3);
     font-size: 8vmin;
     color: red;
-    background-color: yellow;
+    background-color: white;
 }
 
 #reset {
@@ -80,4 +80,12 @@
 
 .box.drag-over {
     background-color: #ffe4b5;
+}
+
+#fichaO, #fichaX {
+    color: red;
+}
+
+#usr_name, #nombre_oponente {
+    color: black;
 }

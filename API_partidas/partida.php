@@ -39,7 +39,7 @@ class Partida
 				$row = mysqli_fetch_assoc($resultUser);
 				$id_usuario = $row['id_usuario'];
 				// Inserta la nueva partida
-				$query = "INSERT INTO partidas (id_usuario, nombre_oponente) VALUES ('$id_usuario', '$nombre_oponente')";
+				$query = "INSERT INTO partida (id_usuario, nombre_oponente) VALUES ('$id_usuario', '$nombre_oponente')";
 				$result = mysqli_query($this->conn, $query);
 				if ($result) {
 					$id_partida = mysqli_insert_id($this->conn); // <-- Aquí obtienes la ID
@@ -74,7 +74,7 @@ class Partida
 		}
 		$row = mysqli_fetch_assoc($resultUser);
 		$id_usuario = $row['id_usuario'];
-		$query = "SELECT * FROM partidas WHERE id_usuario = '$id_usuario'";
+		$query = "SELECT * FROM partida WHERE id_usuario = '$id_usuario'";
 		$result = mysqli_query($this->conn, $query);
 		if ($result && mysqli_num_rows($result) > 0) {
 			$partidas = [];
@@ -96,7 +96,7 @@ class Partida
 		} else {
 			$id_partida = $data['id_partida'];
 			$query = "SELECT p.*, u.usr_name
-                FROM partidas p
+                FROM partida p
                 INNER JOIN usuario u ON p.id_usuario = u.id
                 WHERE p.id = '$id_partida'";
 			$result = mysqli_query($this->conn, $query);
@@ -110,6 +110,31 @@ class Partida
 		}
 	}
 
+	public function enviarMovimiento($data){
+		if (!isset($data['id_partida']) || !isset($data['movimiento'])) {
+			http_response_code(400);
+			return json_encode(["error" => "Datos incompletos"]);
+		}else{
+			$id_partida = $data['id_partida'];
+			$movimiento = $data['movimiento'];
+			// Aquí puedes agregar la lógica para procesar el movimiento
+			try {
+				$query = "UPDATE partida SET movimientos = '$movimiento' WHERE id = '$id_partida'";
+				$result = mysqli_query($this->conn, $query);
+				if ($result) {
+					http_response_code(200);
+					return json_encode(["success" => "Movimiento enviado"]);
+				} else {
+					http_response_code(400);
+					return json_encode(["error" => "No se pudo enviar el movimiento"]);
+				}
+			} catch (mysqli_sql_exception $e) {
+				http_response_code(500);
+				return json_encode(["error" => "Error en la base de datos: " . $e->getMessage()]);
+			}
+		}
+	}
+
 	public function finalizarPartida($data){
 		if (!isset($data['id_partida']) || !isset($data['resultado'])) {
 			http_response_code(400);
@@ -118,7 +143,7 @@ class Partida
 			$id_partida = $data['id_partida'];
 			$resultado = $data['resultado'];
 			try {
-				$query = "UPDATE partidas SET resultado = '$resultado' WHERE id = '$id_partida'";
+				$query = "UPDATE partida SET resultado = '$resultado' WHERE id = '$id_partida'";
 				$result = mysqli_query($this->conn, $query);
 			} catch (mysqli_sql_exception $e) {
 				http_response_code(500);

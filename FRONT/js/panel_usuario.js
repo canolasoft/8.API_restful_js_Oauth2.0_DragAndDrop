@@ -68,7 +68,7 @@ function loadPartidas(partidas) {
             partidaDiv.innerHTML = partida.fecha.substring(0, 10)
             + "⚡ Partida en curso contra <strong>"
             + partida.nombre_oponente + ". </strong>"
-            + "<a href='juego.php?id=" + partida.id + "'>▶ continuar</a>";
+            + "<a class='text-warning' href='juego.php?id=" + partida.id + "'>▶ continuar</a>";
             partidas_encurso.appendChild(partidaDiv);
         } else {
             switch (partida.resultado) {
@@ -114,7 +114,7 @@ document.getElementById('crearPartidaForm').addEventListener('submit', function(
             // Recargar las partidas después de crear una nueva
             console.log("data: ", data);
             // redirijo a la partida creada
-            window.location.href = "juego.php?id=" + data.id;
+            window.location.href = "juego.php?id=" + data.id_partida;
         } else {
             console.log("Error: " + data.error);
         }

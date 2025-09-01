@@ -15,11 +15,12 @@ CREATE TABLE IF NOT EXISTS base_usuarios.access_token (
     PRIMARY KEY (token),
     FOREIGN KEY (id_usuario) REFERENCES usuario(id) ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS base_usuarios.partidas (
+CREATE TABLE IF NOT EXISTS base_usuarios.partida (
     id INT(11) NOT NULL AUTO_INCREMENT,
     id_usuario INT(11) NOT NULL,
     nombre_oponente VARCHAR(100) NOT NULL,
     fecha DATETIME NOT NULL DEFAULT NOW(),
+    movimientos VARCHAR(50) NOT NULL DEFAULT "O,,,,,,,,",
     resultado INT(1) DEFAULT 0, /* 0: en curso, 1: ganado, 2: perdido, 3: empate */
     PRIMARY KEY (id),
     FOREIGN KEY (id_usuario) REFERENCES usuario(id) ON DELETE CASCADE
