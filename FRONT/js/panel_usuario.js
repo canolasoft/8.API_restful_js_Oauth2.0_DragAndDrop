@@ -17,12 +17,15 @@ fetch("../API/api.php/usuario", {
         document.getElementById("usr_email").innerHTML = data.usr_email;
     } else {
         alert("Error: " + data.error);
+        cerrarSesion();
+        window.location.href = "../FRONT/index.php";
     }
 })
 .catch((error) => {
     console.error("Error:", error);
     alert("Error al cargar los datos del usuario. Por favor, inténtalo de nuevo.");
-        //window.location.href = "../FRONT/index.php";
+    cerrarSesion();
+    window.location.href = "../FRONT/index.php";
 });
 
 getPartidas();

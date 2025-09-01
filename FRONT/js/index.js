@@ -29,7 +29,7 @@ document.getElementById('registerForm').addEventListener('submit', function(e) {
     })
     .then(success => {
         alert('Usuario registrado correctamente');
-        //location.reload();
+        loginForm();
     })
     .catch(error => {
         alert(error.message);
