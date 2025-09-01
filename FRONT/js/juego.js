@@ -9,7 +9,6 @@ let msgContainer = document.querySelector(".msg-container");
 let msg = document.querySelector("#msg");
 let fichaO = document.getElementById("fichaO");
 let fichaX = document.getElementById("fichaX");
-let turnoSpan = document.getElementById("turno");
 
 // Configuracion del juego
 // Datos de la partida
@@ -41,23 +40,21 @@ fetch('../API_partidas/api.php/getpartida', {
       // -------------------------------------------------
       // Lógica del juego
       if (turnO) {
-        turnoSpan.innerText = "O";
         fichaX.style.opacity = "0.5";
         fichaO.style.opacity = "1";
         fichaO.classList.add("bg-warning");
         usr_badge.classList.add("bg-warning");
-        usr_badge.classList.remove("bg-light");
-        opponent_badge.classList.add("bg-warning");
-        opponent_badge.classList.remove("bg-light");
+        usr_badge.classList.remove("bg-secondary");
+        opponent_badge.classList.remove("bg-warning");
+        opponent_badge.classList.add("bg-secondary");
       } else {
-        turnoSpan.innerText = "X";
         fichaO.style.opacity = "0.5";
         fichaX.style.opacity = "1";
         fichaX.classList.add("bg-warning");
         opponent_badge.classList.add("bg-warning");
-        opponent_badge.classList.remove("bg-light");
+        opponent_badge.classList.remove("bg-secondary");
         usr_badge.classList.remove("bg-warning");
-        usr_badge.classList.add("bg-light");
+        usr_badge.classList.add("bg-secondary");
       }
 
       const winPatterns = [
@@ -111,29 +108,27 @@ fetch('../API_partidas/api.php/getpartida', {
             fichaArrastrada = null;
             turnO = !turnO;
             if (turnO) {
-              turnoSpan.innerText = "O";
               fichaX.style.opacity = "0.5";
               fichaO.style.opacity = "1";
               usr_badge.classList.add("bg-warning");
-              usr_badge.classList.remove("bg-light");
+              usr_badge.classList.remove("bg-secondary");
               fichaO.classList.add("bg-warning");
               fichaO.classList.remove("bg-light");
               fichaX.classList.remove("bg-warning");
               fichaX.classList.add("bg-light");
               opponent_badge.classList.remove("bg-warning");
-              opponent_badge.classList.add("bg-light");
+              opponent_badge.classList.add("bg-secondary");
             } else {
-              turnoSpan.innerText = "X";
               fichaO.style.opacity = "0.5";
               fichaX.style.opacity = "1";
               usr_badge.classList.remove("bg-warning");
-              usr_badge.classList.add("bg-light");
+              usr_badge.classList.add("bg-secondary");
               fichaX.classList.add("bg-warning");
               fichaX.classList.remove("bg-light");
               fichaO.classList.remove("bg-warning");
               fichaO.classList.add("bg-light");
               opponent_badge.classList.add("bg-warning");
-              opponent_badge.classList.remove("bg-light");
+              opponent_badge.classList.remove("bg-secondary");
             }
             checkWinner(winPatterns);
           }
@@ -217,7 +212,7 @@ const checkWinner = (winPatterns) => {
         showWinner("X");
       }
       hasWin = true;
-      return;
+      return; // retorna de la funcion sin enviar el movimiento a la api
     }
   }
   console.log(String(getEstadoTablero()));
@@ -232,16 +227,6 @@ const checkWinner = (winPatterns) => {
     }
   }
 };
-
-const resetGame = () => {
-  turnO = true;
-  turnoSpan.innerText = "O";
-  enableBoxes();
-  msgContainer.classList.add("hide");
-  fichaArrastrada = null;
-};
-
-resetBtn.addEventListener("click", resetGame);
 
 // envia el movimiento a la api
 const enviarMovimiento = () => {
