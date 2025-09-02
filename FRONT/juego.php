@@ -54,6 +54,7 @@ include 'main_top.html';
         </div>
     </main>
 </div>
+<!-- Fuente: https://www.geeksforgeeks.org/javascript/simple-tic-tac-toe-game-using-javascript/ -->
 
 <?php
 include 'main_bot.html';
