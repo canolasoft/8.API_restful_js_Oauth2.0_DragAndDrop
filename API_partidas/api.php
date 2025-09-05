@@ -41,6 +41,11 @@ switch ($method) {
 			$data = json_decode(file_get_contents('php://input'), true);
 			$result = $partidaObj->enviarMovimiento($data);
 			echo $result;
+		}elseif($endpoint === '/finalizar') {
+			// Finaliza una partida
+			$data = json_decode(file_get_contents('php://input'), true);
+			$result = $partidaObj->finalizarPartida($data);
+			echo $result;
 		}
 		break;
 	default:

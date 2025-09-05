@@ -30,14 +30,11 @@ class Partida
 			$nombre_oponente = $data['nombre_oponente'];
 			try {
 				// Verifica el token
-				$query = "SELECT id_usuario FROM access_token WHERE token = '$token'";
-				$resultUser = mysqli_query($this->conn, $query);
-				if (!$resultUser || mysqli_num_rows($resultUser) == 0) {
+				$id_usuario = $this->verificarToken($token);
+				if (!$id_usuario) {
 					http_response_code(401);
 					return json_encode(["error" => "Token inválido"]);
 				}
-				$row = mysqli_fetch_assoc($resultUser);
-				$id_usuario = $row['id_usuario'];
 				// Inserta la nueva partida
 				$query = "INSERT INTO partida (id_usuario, nombre_oponente) VALUES ('$id_usuario', '$nombre_oponente')";
 				$result = mysqli_query($this->conn, $query);
@@ -66,14 +63,11 @@ class Partida
 		}
 		$token = $data['token'];
 		// Verifica el token
-		$query = "SELECT id_usuario FROM access_token WHERE token = '$token'";
-		$resultUser = mysqli_query($this->conn, $query);
-		if (!$resultUser || mysqli_num_rows($resultUser) == 0) {
+		$id_usuario = $this->verificarToken($token);
+		if (!$id_usuario) {
 			http_response_code(401);
 			return json_encode(["error" => "Token inválido"]);
 		}
-		$row = mysqli_fetch_assoc($resultUser);
-		$id_usuario = $row['id_usuario'];
 		$query = "SELECT * FROM partida WHERE id_usuario = '$id_usuario'";
 		$result = mysqli_query($this->conn, $query);
 		if ($result && mysqli_num_rows($result) > 0) {
@@ -90,10 +84,17 @@ class Partida
 	}
 
 	public function getPartida($data){
-		if (!isset($data['id_partida'])) {
+		if (!isset($data['token']) || !isset($data['id_partida'])) {
 			http_response_code(400);
 			return json_encode(["error" => "Datos incompletos"]);
 		} else {
+			// Verifica el token
+			$token = $data['token'];
+			$id_usuario = $this->verificarToken($token);
+			if (!$id_usuario) {
+				http_response_code(401);
+				return json_encode(["error" => "Token inválido"]);
+			}
 			$id_partida = $data['id_partida'];
 			$query = "SELECT p.*, u.usr_name
                 FROM partida p
@@ -111,10 +112,17 @@ class Partida
 	}
 
 	public function enviarMovimiento($data){
-		if (!isset($data['id_partida']) || !isset($data['movimiento'])) {
+		if (!isset($data['token']) || !isset($data['id_partida']) || !isset($data['movimiento'])) {
 			http_response_code(400);
 			return json_encode(["error" => "Datos incompletos"]);
 		}else{
+			// Verifica el token
+			$token = $data['token'];
+			$id_usuario = $this->verificarToken($token);
+			if (!$id_usuario) {
+				http_response_code(401);
+				return json_encode(["error" => "Token inválido"]);
+			}
 			$id_partida = $data['id_partida'];
 			$movimiento = $data['movimiento'];
 			// Aquí puedes agregar la lógica para procesar el movimiento
@@ -136,12 +144,32 @@ class Partida
 	}
 
 	public function finalizarPartida($data){
-		if (!isset($data['id_partida']) || !isset($data['resultado'])) {
+		if (!isset($data['token']) || !isset($data['id_partida']) || !isset($data['resultado'])) {
 			http_response_code(400);
 			return json_encode(["error" => "Datos incompletos"]);
 		} else {
+			// Verifica el token
+			$token = $data['token'];
+			$id_usuario = $this->verificarToken($token);
+			if (!$id_usuario) {
+				http_response_code(401);
+				return json_encode(["error" => "Token inválido"]);
+			}
 			$id_partida = $data['id_partida'];
-			$resultado = $data['resultado'];
+			switch($data['resultado']){
+				case 'O':
+					$resultado = 1;
+					break;
+				case 'X':
+					$resultado = 2;
+					break;
+				case 'E':
+					$resultado = 3;
+					break;
+				default:
+					http_response_code(400);
+					return json_encode(["error" => "Resultado inválido"]);
+			}
 			try {
 				$query = "UPDATE partida SET resultado = '$resultado' WHERE id = '$id_partida'";
 				$result = mysqli_query($this->conn, $query);
@@ -157,5 +185,20 @@ class Partida
 				return json_encode(["error" => "No se pudo actualizar la partida"]);
 			}
 		}
+	}
+
+	public function verificarToken($token){
+		if (!isset($token)) {
+			http_response_code(400);
+			return json_encode(["error" => "Token no proporcionado"]);
+		}
+		$query = "SELECT id_usuario FROM access_token WHERE token = '$token'";
+		$resultUser = mysqli_query($this->conn, $query);
+		if (!$resultUser || mysqli_num_rows($resultUser) == 0) {
+			http_response_code(401);
+			return json_encode(["error" => "Token inválido"]);
+		}
+		$row = mysqli_fetch_assoc($resultUser);
+		return $row['id_usuario'];
 	}
 }

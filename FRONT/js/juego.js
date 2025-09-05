@@ -11,52 +11,34 @@ let fichaO = document.getElementById("fichaO");
 let fichaX = document.getElementById("fichaX");
 
 // Configuracion del juego
+const partida = {
+  id_partida: null,
+  usr_name: "",
+  nombre_oponente: "",
+  movimientos: [],
+  resultado: "", // 'O', 'X' o 'E' (empate)
+};
 // Datos de la partida
 // Obtener la partida
 var movimientos = {};
-const id_partida = window.location.search.split('=')[1];
+const id_partida = window.location.search.split("=")[1];
 console.log("ID partida: " + id_partida);
-fetch('../API_partidas/api.php/getpartida', {
-  method: 'POST',
+fetch("../API_partidas/api.php/getpartida", {
+  method: "POST",
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
   body: JSON.stringify({ token, id_partida }),
 })
   .then((response) => response.json())
   .then((data) => {
     if (!data.error) {
-      // Llama a la función para cargar las partidas listas
-      console.log("Partida cargada:", data);
-      const usr_name = document.getElementById("usr_name");
-      const nombre_oponente = document.getElementById("nombre_oponente");
-      usr_name.innerHTML = data.usr_name + "⭕";
-      nombre_oponente.innerHTML = "❌" + data.nombre_oponente;
-      movimientos = data.movimientos;
-      turnO = getTurno(movimientos); // Player O starts
-      console.log("Turno de O: " + turnO);
-      // cargo el estado del tablero
-      cargarEstadoTablero(data.movimientos);
-      // -------------------------------------------------
-      // Lógica del juego
-      if (turnO) {
-        fichaX.style.opacity = "0.5";
-        fichaO.style.opacity = "1";
-        fichaO.classList.add("bg-warning");
-        usr_badge.classList.add("bg-warning");
-        usr_badge.classList.remove("bg-secondary");
-        opponent_badge.classList.remove("bg-warning");
-        opponent_badge.classList.add("bg-secondary");
-      } else {
-        fichaO.style.opacity = "0.5";
-        fichaX.style.opacity = "1";
-        fichaX.classList.add("bg-warning");
-        opponent_badge.classList.add("bg-warning");
-        opponent_badge.classList.remove("bg-secondary");
-        usr_badge.classList.remove("bg-warning");
-        usr_badge.classList.add("bg-secondary");
-      }
-
+      partida.id_partida = data.id_partida;
+      partida.usr_name = data.usr_name;
+      partida.nombre_oponente = data.nombre_oponente;
+      partida.movimientos = data.movimientos;
+      partida.resultado = data.resultado;
+      console.log("Partida cargada:", partida);
       const winPatterns = [
         [0, 1, 2],
         [0, 3, 6],
@@ -67,73 +49,10 @@ fetch('../API_partidas/api.php/getpartida', {
         [3, 4, 5],
         [6, 7, 8],
       ];
-
-      // Drag & Drop handlers
-      let fichaArrastrada = null;
-
-      fichaO.addEventListener("dragstart", function (e) {
-        if (turnO) {
-          fichaArrastrada = "O";
-        } else {
-          e.preventDefault();
-        }
-      });
-
-      fichaX.addEventListener("dragstart", function (e) {
-        if (!turnO) {
-          fichaArrastrada = "X";
-        } else {
-          e.preventDefault();
-        }
-      });
-
-      boxes.forEach((box) => {
-        box.addEventListener("dragover", function (e) {
-          e.preventDefault();
-          if (!box.disabled && box.innerText === "") {
-            box.classList.add("drag-over");
-          }
-        });
-        box.addEventListener("dragleave", function (e) {
-          box.classList.remove("drag-over");
-        });
-        box.addEventListener("drop", function (e) {
-          e.preventDefault();
-          box.classList.remove("drag-over");
-          if (!box.disabled && box.innerText === "" && fichaArrastrada) {
-            box.innerText = fichaArrastrada;
-            //box.style.color = fichaArrastrada === 'O' ? 'green' : 'black';
-            //box.style.color = fichaArrastrada = "red";
-            box.disabled = true;
-            fichaArrastrada = null;
-            turnO = !turnO;
-            if (turnO) {
-              fichaX.style.opacity = "0.5";
-              fichaO.style.opacity = "1";
-              usr_badge.classList.add("bg-warning");
-              usr_badge.classList.remove("bg-secondary");
-              fichaO.classList.add("bg-warning");
-              fichaO.classList.remove("bg-light");
-              fichaX.classList.remove("bg-warning");
-              fichaX.classList.add("bg-light");
-              opponent_badge.classList.remove("bg-warning");
-              opponent_badge.classList.add("bg-secondary");
-            } else {
-              fichaO.style.opacity = "0.5";
-              fichaX.style.opacity = "1";
-              usr_badge.classList.remove("bg-warning");
-              usr_badge.classList.add("bg-secondary");
-              fichaX.classList.add("bg-warning");
-              fichaX.classList.remove("bg-light");
-              fichaO.classList.remove("bg-warning");
-              fichaO.classList.add("bg-light");
-              opponent_badge.classList.add("bg-warning");
-              opponent_badge.classList.remove("bg-secondary");
-            }
-            checkWinner(winPatterns);
-          }
-        });
-      });
+      iniciarJuego();
+      if (partida.resultado !== "") {
+        checkWinner(winPatterns);
+      }
     } else {
       console.log("Error: " + data.error);
       const usr_name = document.getElementById("usr_name");
@@ -145,6 +64,104 @@ fetch('../API_partidas/api.php/getpartida', {
   .catch((error) => {
     console.error("Error al cargar partidas:", error);
   });
+
+function iniciarJuego() {
+  console.log("Partida cargada:", partida);
+  const usr_name = document.getElementById("usr_name");
+  const nombre_oponente = document.getElementById("nombre_oponente");
+  usr_name.innerHTML = partida.usr_name + "⭕";
+  nombre_oponente.innerHTML = "❌" + partida.nombre_oponente;
+  turnO = getTurno(partida.movimientos); // Player O starts
+  console.log("Turno de O: " + turnO);
+  // cargo el estado del tablero
+  cargarEstadoTablero(partida.movimientos);
+  // -------------------------------------------------
+  // Lógica del juego
+  if (turnO) {
+    fichaX.style.opacity = "0.5";
+    fichaO.style.opacity = "1";
+    fichaO.classList.add("bg-warning");
+    usr_badge.classList.add("bg-warning");
+    usr_badge.classList.remove("bg-secondary");
+    opponent_badge.classList.remove("bg-warning");
+    opponent_badge.classList.add("bg-secondary");
+  } else {
+    fichaO.style.opacity = "0.5";
+    fichaX.style.opacity = "1";
+    fichaX.classList.add("bg-warning");
+    opponent_badge.classList.add("bg-warning");
+    opponent_badge.classList.remove("bg-secondary");
+    usr_badge.classList.remove("bg-warning");
+    usr_badge.classList.add("bg-secondary");
+  }
+
+  // Drag & Drop handlers
+  let fichaArrastrada = null;
+
+  fichaO.addEventListener("dragstart", function (e) {
+    if (turnO) {
+      fichaArrastrada = "O";
+    } else {
+      e.preventDefault();
+    }
+  });
+
+  fichaX.addEventListener("dragstart", function (e) {
+    if (!turnO) {
+      fichaArrastrada = "X";
+    } else {
+      e.preventDefault();
+    }
+  });
+
+  boxes.forEach((box) => {
+    box.addEventListener("dragover", function (e) {
+      e.preventDefault();
+      if (!box.disabled && box.innerText === "") {
+        box.classList.add("drag-over");
+      }
+    });
+    box.addEventListener("dragleave", function (e) {
+      box.classList.remove("drag-over");
+    });
+    box.addEventListener("drop", function (e) {
+      e.preventDefault();
+      box.classList.remove("drag-over");
+      if (!box.disabled && box.innerText === "" && fichaArrastrada) {
+        box.innerText = fichaArrastrada;
+        //box.style.color = fichaArrastrada === 'O' ? 'green' : 'black';
+        //box.style.color = fichaArrastrada = "red";
+        box.disabled = true;
+        fichaArrastrada = null;
+        turnO = !turnO;
+        if (turnO) {
+          fichaX.style.opacity = "0.5";
+          fichaO.style.opacity = "1";
+          usr_badge.classList.add("bg-warning");
+          usr_badge.classList.remove("bg-secondary");
+          fichaO.classList.add("bg-warning");
+          fichaO.classList.remove("bg-light");
+          fichaX.classList.remove("bg-warning");
+          fichaX.classList.add("bg-light");
+          opponent_badge.classList.remove("bg-warning");
+          opponent_badge.classList.add("bg-secondary");
+        } else {
+          fichaO.style.opacity = "0.5";
+          fichaX.style.opacity = "1";
+          usr_badge.classList.remove("bg-warning");
+          usr_badge.classList.add("bg-secondary");
+          fichaX.classList.add("bg-warning");
+          fichaX.classList.remove("bg-light");
+          fichaO.classList.remove("bg-warning");
+          fichaO.classList.add("bg-light");
+          opponent_badge.classList.add("bg-warning");
+          opponent_badge.classList.remove("bg-secondary");
+        }
+        checkWinner(winPatterns);
+      }
+    });
+  });
+}
 
 function cargarEstadoTablero(movimientos) {
   // movimientos es un string tipo: "O,X,,O,,X,,"
@@ -158,9 +175,13 @@ function cargarEstadoTablero(movimientos) {
 
 function getTurno(movimientos) {
   // cuenta la cantidad de "O" dentro de los movimientos
-  const cantidadO = movimientos.split(",").filter(ficha => ficha === "O").length;
+  const cantidadO = movimientos
+    .split(",")
+    .filter((ficha) => ficha === "O").length;
   // cuenta la cantidad de "X" dentro de los movimientos
-  const cantidadX = movimientos.split(",").filter(ficha => ficha === "X").length;
+  const cantidadX = movimientos
+    .split(",")
+    .filter((ficha) => ficha === "X").length;
   if (cantidadO <= cantidadX) {
     return true; // Es el turno de O
   } else {
@@ -169,7 +190,7 @@ function getTurno(movimientos) {
 }
 
 function getEstadoTablero() {
-  return boxes.map(box => box.innerText);
+  return boxes.map((box) => box.innerText);
 }
 
 const enableBoxes = () => {
@@ -187,7 +208,13 @@ const disableBoxes = () => {
 };
 
 const showWinner = (winner) => {
-  msg.innerText = `Congratulations, Winner is ${winner}`;
+  var jugador_gana = "";
+  if (winner === "O") {
+    jugador_gana = partida.usr_name + " (O)";
+  } else {
+    jugador_gana = partida.nombre_oponente + " (X)";
+  }
+  msg.innerText = `Congratulations, Winner is ` + jugador_gana;
   msgContainer.classList.remove("hide");
   disableBoxes();
 };
@@ -212,6 +239,7 @@ const checkWinner = (winPatterns) => {
         showWinner("X");
       }
       hasWin = true;
+      finalizarPartida(pos1Val); // 'O', 'X' o 'E' (empate)
       //return; // retorna de la funcion sin enviar el movimiento a la api
     }
   }
@@ -223,7 +251,8 @@ const checkWinner = (winPatterns) => {
     const allBoxes = [...boxes].every((box) => box.innerText !== "");
     if (allBoxes) {
       msgContainer.classList.remove("hide");
-      msg.innerText = "Match Drawn";
+      msg.innerText = "Empate!";
+      finalizarPartida("E"); // 'O', 'X' o 'E' (empate)
     }
   }
 };
@@ -233,7 +262,7 @@ const enviarMovimiento = () => {
   data = {
     movimiento: String(getEstadoTablero()),
     token: token,
-    id_partida: id_partida
+    id_partida: id_partida,
   };
   fetch("../API_partidas/api.php/movimiento", {
     method: "POST",
@@ -256,3 +285,30 @@ const enviarMovimiento = () => {
     });
 };
 
+// finaliza la partida
+const finalizarPartida = (resultado) => {
+  data = {
+    token: token,
+    id_partida: id_partida,
+    resultado: resultado, // 'O', 'X' o 'empate'
+  };
+  fetch("../API_partidas/api.php/finalizar", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (!data.error) {
+        // partida finalizada
+        console.log("Partida finalizada:", data);
+      } else {
+        console.log("Error: " + data.error);
+      }
+    })
+    .catch((error) => {
+      console.error("Error al finalizar la partida:", error);
+    });
+};
