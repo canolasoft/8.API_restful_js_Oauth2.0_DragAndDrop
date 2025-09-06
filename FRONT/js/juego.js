@@ -3,7 +3,7 @@
 ----------------------------------------------------------------- */
 let boxes = [...document.querySelectorAll(".box")];
 let resetBtn = document.querySelector("#reset");
-let turnO = true; // Player O starts
+turnO = null; // true: O, false: X
 //let newGameBtn = document.querySelector('#new-btn');
 let msgContainer = document.querySelector(".msg-container");
 let msg = document.querySelector("#msg");
@@ -38,6 +38,7 @@ fetch("../API_partidas/api.php/getpartida", {
       partida.nombre_oponente = data.nombre_oponente;
       partida.movimientos = data.movimientos;
       partida.resultado = data.resultado;
+      partida.comienza = data.comienza;
       console.log("Partida cargada:", partida);
       const winPatterns = [
         [0, 1, 2],
@@ -49,29 +50,42 @@ fetch("../API_partidas/api.php/getpartida", {
         [3, 4, 5],
         [6, 7, 8],
       ];
-      iniciarJuego();
+      iniciarJuego(winPatterns);
       if (partida.resultado !== "") {
         checkWinner(winPatterns);
       }
     } else {
       console.log("Error: " + data.error);
-      const usr_name = document.getElementById("usr_name");
-      const nombre_oponente = document.getElementById("nombre_oponente");
-      usr_name.innerHTML = data.error;
-      nombre_oponente.innerHTML = data.error;
+      alert("Error al cargar la partida: " + data.error);
+      window.location.href = "panel_usuario.php";
     }
   })
   .catch((error) => {
-    console.error("Error al cargar partidas:", error);
+    console.error("Error al cargar la partida:", error);
   });
 
-function iniciarJuego() {
+function iniciarJuego(winPatterns) {
   console.log("Partida cargada:", partida);
   const usr_name = document.getElementById("usr_name");
   const nombre_oponente = document.getElementById("nombre_oponente");
   usr_name.innerHTML = partida.usr_name + "⭕";
   nombre_oponente.innerHTML = "❌" + partida.nombre_oponente;
-  turnO = getTurno(partida.movimientos); // Player O starts
+  console.log("Partida comienza", partida.comienza);
+  if (partida.comienza == "O") {
+    console.log("Empieza O");
+    usr_badge.classList.add("bg-warning");
+    usr_badge.classList.remove("bg-secondary");
+    opponent_badge.classList.remove("bg-warning");
+    opponent_badge.classList.add("bg-secondary");
+    turnO = true; // Player O starts
+  } else {
+    console.log("Empieza X");
+    opponent_badge.classList.remove("bg-secondary");
+    opponent_badge.classList.add("bg-warning");
+    usr_badge.classList.remove("bg-warning");
+    usr_badge.classList.add("bg-secondary");
+    turnO = false; // Player X starts
+  }
   console.log("Turno de O: " + turnO);
   // cargo el estado del tablero
   cargarEstadoTablero(partida.movimientos);
@@ -207,20 +221,29 @@ const disableBoxes = () => {
   }
 };
 
-const showWinner = (winner) => {
+const showWinner = (winner, pattern) => {
   var jugador_gana = "";
   if (winner === "O") {
     jugador_gana = partida.usr_name + " (O)";
+    usr_badge.classList.add("bg-success");
+    opponent_badge.classList.add("bg-danger");
   } else {
     jugador_gana = partida.nombre_oponente + " (X)";
+    opponent_badge.classList.add("bg-success");
+    usr_badge.classList.add("bg-danger");
   }
-  msg.innerText = `Congratulations, Winner is ` + jugador_gana;
-  msgContainer.classList.remove("hide");
+  // cambio de color las celdas ganadoras
+  boxes[pattern[0]].style.color = "green";
+  boxes[pattern[1]].style.color = "green";
+  boxes[pattern[2]].style.color = "green";
+  fichaO.style.display = "none";
+  fichaX.style.display = "none";
   disableBoxes();
 };
 
 const checkWinner = (winPatterns) => {
   let hasWin = false;
+  var counter = 0;
   for (let pattern of winPatterns) {
     let pos1Val = boxes[pattern[0]].innerText;
     let pos2Val = boxes[pattern[1]].innerText;
@@ -232,16 +255,21 @@ const checkWinner = (winPatterns) => {
       pos1Val === pos2Val &&
       pos2Val === pos3Val
     ) {
+      console.log("pos1Val", pos1Val);
+      console.log("pos2Val", pos2Val);
+      console.log("pos3Val", pos3Val);
+      console.log("counter", counter);
       if (pos1Val === "O") {
-        showWinner("O");
+        showWinner("O", winPatterns[counter]);
         // cambiar el resultado de la partida
       } else {
-        showWinner("X");
+        showWinner("X", winPatterns[counter]);
       }
       hasWin = true;
       finalizarPartida(pos1Val); // 'O', 'X' o 'E' (empate)
       //return; // retorna de la funcion sin enviar el movimiento a la api
     }
+    counter++;
   }
   console.log(String(getEstadoTablero()));
   enviarMovimiento();
@@ -250,8 +278,15 @@ const checkWinner = (winPatterns) => {
   if (!hasWin) {
     const allBoxes = [...boxes].every((box) => box.innerText !== "");
     if (allBoxes) {
-      msgContainer.classList.remove("hide");
-      msg.innerText = "Empate!";
+      console.log("Empate");
+      fichaO.style.display = "none";
+      fichaX.style.display = "none";
+      usr_badge.classList.remove("bg-warning");
+      opponent_badge.classList.remove("bg-warning");
+      usr_badge.classList.add("bg-secondary");
+      opponent_badge.classList.add("bg-secondary");
+      boxes.forEach((box) => (box.style.color = "grey"));
+      disableBoxes();
       finalizarPartida("E"); // 'O', 'X' o 'E' (empate)
     }
   }

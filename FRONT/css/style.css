@@ -54,10 +54,6 @@
     font-size: 8vmin;
 }
 
-.msg-container {
-    height: 30vmin;
-}
-
 .hide {
     display: none;
 }
@@ -84,8 +80,4 @@
 
 #fichaO, #fichaX {
     color: red;
-}
-
-#usr_name, #nombre_oponente {
-    color: black;
 }

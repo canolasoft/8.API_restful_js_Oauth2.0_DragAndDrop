@@ -36,9 +36,6 @@ include 'main_top.html';
                 </td>
             </tr>
         </table>
-        <div class="msg-container hide">
-            <p id="msg">Winner</p>
-        </div>
         <div class="container">
             <div class="game">
                 <button class="box"></button>

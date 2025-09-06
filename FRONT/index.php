@@ -17,8 +17,8 @@
     </div>
 
     <!-- Formulario para añadir un nuevo usuario -->
-    <div class="container bg-dark text-light rounded-3 p-5 mt-3">
-        <form id="registerForm" class="my-4 bg-light text-dark p-4 rounded col-lg-6 mx-auto" enctype="multipart/form-data">
+    <div class="container rounded-3 p-5 mt-3">
+        <form id="registerForm" class="my-4 border border-light p-4 rounded col-lg-6 mx-auto" enctype="multipart/form-data">
             <h1 class="text-center">Registro de usuario</h1>
             <div class="mb-3">
                 <label for="usr_name" class="form-label">Nombre <strong class="text-danger">*</strong></label>
@@ -45,7 +45,7 @@
         </form>
 
         <!-- Formulario para iniciar sesión -->
-        <form id="loginForm" class="my-4 bg-light text-dark p-4 rounded col-lg-6 mx-auto">
+        <form id="loginForm" class="my-4 border border-light p-4 rounded col-lg-6 mx-auto">
             <h1 class="text-center">Inicio de sesión</h1>
             <div class="mb-3">
                 <label for="usr_email_login" class="form-label">Email <strong class="text-danger">*</strong></label>

@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS base_usuarios.partida (
     id_usuario INT(11) NOT NULL,
     nombre_oponente VARCHAR(100) NOT NULL,
     fecha DATETIME NOT NULL DEFAULT NOW(),
+    comienza VARCHAR(1) NOT NULL DEFAULT 'X', /* 'X' o 'O' */
     movimientos VARCHAR(50) NOT NULL DEFAULT ",,,,,,,,",
     resultado INT(1) DEFAULT 0, /* 0: en curso, 1: ganado, 2: perdido, 3: empate */
     PRIMARY KEY (id),

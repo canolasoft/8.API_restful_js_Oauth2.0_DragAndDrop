@@ -35,8 +35,15 @@ class Partida
 					http_response_code(401);
 					return json_encode(["error" => "Token inválido"]);
 				}
+				// random number for deciding who starts
+				$random = rand(0, 1);
+				if ($random == 0) {
+					$random = 'O';
+				} else {
+					$random = 'X';
+				}
 				// Inserta la nueva partida
-				$query = "INSERT INTO partida (id_usuario, nombre_oponente) VALUES ('$id_usuario', '$nombre_oponente')";
+				$query = "INSERT INTO partida (id_usuario, nombre_oponente, comienza) VALUES ('$id_usuario', '$nombre_oponente', '$random')";
 				$result = mysqli_query($this->conn, $query);
 				if ($result) {
 					$id_partida = mysqli_insert_id($this->conn); // <-- Aquí obtienes la ID

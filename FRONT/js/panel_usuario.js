@@ -68,6 +68,7 @@ function loadPartidas(partidas) {
         const li = document.createElement("li");
         if (partida.resultado == "0") { /* 0: en curso, 1: ganado, 2: perdido, 3: empate */
             const partidaDiv = document.createElement("div");
+            partidaDiv.classList.add("mb-3");
             partidaDiv.innerHTML = partida.fecha.substring(0, 10)
             + "⚡ Partida en curso contra <strong>"
             + partida.nombre_oponente + ". </strong>"
@@ -76,20 +77,21 @@ function loadPartidas(partidas) {
         } else {
             switch (partida.resultado) {
                 case "1":
-                    resultado = "Ganaste";
+                    resultado = "<span class='text-success'><strong>Ganaste</strong></span>";
                     break;
                 case "2":
-                    resultado = "Perdiste";
+                    resultado = "<span class='text-danger'><strong>Perdiste</strong></span>";
                     break;
                 case "3":
-                    resultado = "Empate";
+                    resultado = "<span class='text-secondary'><strong>Empate</strong></span>";
                     break;
             }
             const partidaDiv = document.createElement("div");
             partidaDiv.innerHTML = partida.fecha.substring(0, 10)
             + "✔ Partida finalizada contra <strong>"
             + partida.nombre_oponente + ". </strong>"
-            + "Resultado: " + resultado;
+            + "Resultado: " + resultado
+            + "<a class='text-warning' href='juego.php?id=" + partida.id + "'>⏭ ver movimientos</a>";
             partidas_finalizadas.appendChild(partidaDiv);
         }
     });
