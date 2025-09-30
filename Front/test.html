@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Abrir panel DevTools (F12 o click derecho > inspeccionar)</h1>
+    <button id="Iniciar">Iniciar</button>
+<script>
+    window.onload = function() {
+        // Define las "clases" que se utilizarán en el juego
+        function dinosaurio(tipo_color) {
+            this.tipo_color = tipo_color;
+        };
+
+        function recinto(nombre) {
+            this.nombre = nombre;
+            this.dinosaurios = [];
+            this.puntaje = 0;
+        };
+
+        function jugador() {
+            this.nombre = null;
+            this.puntaje = 0;
+            this.recintos = [];
+            this.mano = [];
+        }
+
+        function partida() {
+            this.jugadores = [];
+            this.turno = null;
+            this.ronda = null;
+        };
+
+        const btn = document.getElementById("Iniciar");
+        btn.addEventListener("click", () => {
+
+            // crea los dinosaurios
+            dino1 = new dinosaurio("Tiranosaurio rex");
+            dino2 = new dinosaurio("Diplodocus");
+            dino3 = new dinosaurio("Estegosaurio");
+            dino4 = new dinosaurio("Triceratops");
+            dino5 = new dinosaurio("Espinosaurio");
+            dino6 = new dinosaurio("Parasaurolophus");
+
+            // Configuración de la partida
+            let cantidad_jugadores = null;
+            while(cantidad_jugadores<2 || cantidad_jugadores>5){
+                cantidad_jugadores = prompt("Ingresa cantidad de jugadores (2 a 5): ");
+            }
+
+            // Crea la partida
+            partida1 = new partida()
+
+            // Crea los jugadores
+            for(i=1 ; i<=cantidad_jugadores ; i++){
+                jugador_partida = new jugador();
+                while(jugador_partida.nombre == null || jugador_partida.nombre == ""){
+                    jugador_partida.nombre = prompt("Ingresa el nombre del jugador "+i+": ");
+                }
+                    // Añade recintos a cada jugador
+                    recinto1 = new recinto("Bosque de la Semejanza");
+                    recinto2 = new recinto("Prado de la Diferencia");
+                    recinto3 = new recinto("Pradera del Amor");
+                    recinto4 = new recinto("Trío Frondoso");
+                    recinto5 = new recinto("Rey de la Selva");
+                    recinto6 = new recinto("Isla Solitaria");
+                    recinto7 = new recinto("Rio");
+                    jugador_partida.recintos.push(recinto1);
+                    jugador_partida.recintos.push(recinto2);
+                    jugador_partida.recintos.push(recinto3);
+                    jugador_partida.recintos.push(recinto4);
+                    jugador_partida.recintos.push(recinto5);
+                    jugador_partida.recintos.push(recinto6);
+                    jugador_partida.recintos.push(recinto7);
+                    // Carga 6 dinosaurios a la mano de cada jugador
+                    for(j=0 ; j<5 ; j++){
+                        rand1 = Math.floor(Math.random() * 6) + 1;
+                        switch(rand1){
+                            case 1:
+                                jugador_partida.mano.push(dino1);
+                                break;
+                            case 2:
+                                jugador_partida.mano.push(dino2);
+                                break;
+                            case 3:
+                                jugador_partida.mano.push(dino3);
+                                break;
+                            case 4:
+                                jugador_partida.mano.push(dino4);
+                                break;
+                            case 5:
+                                jugador_partida.mano.push(dino5);
+                                break;
+                            case 6:
+                                jugador_partida.mano.push(dino6);
+                                break;
+                            default:
+                                console.log("Error al cargar mano");
+                                break;
+                        }
+                    }
+                    // Añade jugador a la partida
+                    partida1.jugadores.push(jugador_partida);
+            }
+
+            // Resumen de lógica del juego
+            // 1. lanzar el dado y mostrar restricción
+            // 2. mostrar recintos y mano del jugador
+            // 3. jugador coloca dinosaurio en recinto
+            // 4. cambiar de jugador y volver al paso 2 hasta que todos coloquen un dinosaurio
+            // 5. si todos los jugadores colocaron un dinosaurio:
+            // cambiar de turno, pasar manos a jugadores de la izquierda y colver al paso 1
+
+            // inicio del juego
+            partida1.turno = 1;
+            partida1.ronda = 1;
+            jugadorActual = 0;
+
+            while(partida1.turno <= 6 && partida1.ronda < 3){
+                console.log("Turno de "+ partida1.jugadores[jugadorActual].nombre);
+                // 1. lanzar el dado y mostrar restricción
+                dado = Math.floor(Math.random() * 6) + 1;
+                switch(dado){
+                    case 1:
+                        console.log("Restricción: zona de bosque");
+                        break;
+                    case 2:
+                        console.log("Restricción: zona rocosa");
+                        break;
+                    case 3:
+                        console.log("Restricción: aseos");
+                        break;
+                    case 4:
+                        console.log("Restricción: restauración");
+                        break;
+                    case 5:
+                        console.log("Restricción: zona sin presencia de T-Rex");
+                        break;
+                    case 6:
+                        console.log("Restricción: zona sin dinosaurios");
+                        break;
+                    default:
+                        console.log("Error al lanzar el dado");
+                        break;
+                }
+
+                // 2. mostrar recintos y mano del jugador
+                console.log("Tablero del jugador "+ partida1.jugadores[jugadorActual].nombre);
+                for(i=0 ; i<7 ; i++){
+                    console.log(
+                        [i+1]+" - "+partida1.jugadores[jugadorActual].recintos[i].nombre
+                        +": "+partida1.jugadores[jugadorActual].recintos[i].dinosaurios
+                    );
+                }
+                console.log("Mano del jugador "+ partida1.jugadores[jugadorActual].nombre);
+                for(i=0 ; i<partida1.jugadores[jugadorActual].mano.length ; i++){
+                    if(partida1.jugadores[jugadorActual].mano[i]){
+                        console.log(i+1 +" - "+ partida1.jugadores[jugadorActual].mano[i].tipo_color);
+                    }
+                }
+
+                // 3. jugador coloca dinosaurio en recinto
+                let dino_seleccionado = prompt("Selecciona dinosaurio de tu mano: ");
+                // verifica que el dinosaurio seleccionado es correcto
+                // aqui
+                let recinto_seleccionado = prompt(
+                    "Selecciona el recinto para colocar el dinosaurio "
+                    + partida1.jugadores[jugadorActual].mano[dino_seleccionado-1].tipo_color +": "
+                );
+                // verifica que el recinto seleccionado es correcto
+                // aqui
+                // asigna el dinosaurio al recinto
+                partida1.jugadores[jugadorActual].recintos[recinto_seleccionado-1].dinosaurios.push(
+                    partida1.jugadores[jugadorActual].mano[dino_seleccionado-1].tipo_color
+                );
+                console.log("------------------------------------------------------------------");
+                console.log(
+                    "Dinosaurio "+ partida1.jugadores[jugadorActual].mano[dino_seleccionado-1].tipo_color
+                    + " colocado en recinto " + partida1.jugadores[jugadorActual].recintos[recinto_seleccionado-1].nombre
+                );
+                // y retira el dinosaurio de la mano del jugador
+                delete partida1.jugadores[jugadorActual].mano[dino_seleccionado-1];
+
+                // 4. cambiar de jugador y volver al paso 2 hasta que todos coloquen un dinosaurio
+                partida1.turno = partida1.turno + 1;
+                jugadorActual = jugadorActual + 1;
+                if(jugadorActual == partida1.jugadores.length){
+                    jugadorActual = 0;
+                }
+                // cambio de ronda
+                if(partida1.turno == 6){
+                    partida.turno == 1;
+                    partida.ronda == 2;
+                }
+            }
+        });
+    };
+
+</script>
+    
+</body>
+</html>

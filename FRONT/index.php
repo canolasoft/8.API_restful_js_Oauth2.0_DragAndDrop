@@ -1,7 +1,11 @@
 <?php
     include 'main_top.html';
 ?>
-    <div id="inicio" class="px-4 pt-5 my-5 text-center border-bottom">
+    <div id="inicio" class="px-4 pt-5 my-5 text-center">
+        <h1>Draftosaurus en JavaScript</h1>
+        <a href="test.html" class="btn btn-outline-success btn-lg">Iniciar prueba</a>
+        <p>Este ejemplo muestra la lógica basica para una partida de Draftosaurus en JavaScript</p>
+        <hr>
         <h1 class="display-4 fw-bold">Tic Tac Toe ❌|⭕</h1>
         <div class="col-lg-6 mx-auto">
             <p class="lead mb-4">Arrastra y suelta las fichas para formar 3 en línea.</p>
